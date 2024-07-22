@@ -1,0 +1,42 @@
+[
+  {
+    "model": "materials.course",
+    "pk": 2,
+    "fields": {
+      "name": "Иностранные языки",
+      "description": "Базовый курс иностарнных языков",
+      "image": ""
+    }
+  },
+  {
+    "model": "materials.course",
+    "pk": 3,
+    "fields": {
+      "name": "Английский язык",
+      "description": "Базовый курс английского языка",
+      "image": ""
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 2,
+    "fields": {
+      "name": "Английский язык",
+      "description": "Базовый курс английского языка",
+      "image": "",
+      "url_video": null,
+      "course": 2
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 3,
+    "fields": {
+      "name": "Испанский язык",
+      "description": "Базовый курс английского языка",
+      "image": "",
+      "url_video": null,
+      "course": 2
+    }
+  }
+]
