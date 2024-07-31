@@ -1,6 +1,8 @@
 import stripe
 
-stripe.api_key = 'sk_test_51PiW0XHFg31voWFImtLQgr4D1npm86EvuMlFDOGqQeg2hyrBNyxEgBCV7OK2yMfhnfMS82RTvBhjKNdYcRsmgkn300u4N8D7t7'
+from config.settings import API_KEY_STRIPE
+
+stripe.api_key = API_KEY_STRIPE
 
 
 def create_price_for_payment(amount):
