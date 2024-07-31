@@ -11,7 +11,7 @@ class CourseSerializer(ModelSerializer):
     is_subscribed = SerializerMethodField()
 
     def get_is_subscribed(self, obj):
-        user = self.context['request'].user
+        user = self.context["request"].user
         if user.is_authenticated:
             return Subscription.objects.filter(user=user, course=obj).exists()
         return False
@@ -21,7 +21,7 @@ class CourseSerializer(ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('name', 'description', 'owner', 'lessons', 'is_subscribed')
+        fields = ("name", "description", "owner", "lessons", "is_subscribed")
 
 
 class CourseDetailSerializer(ModelSerializer):
@@ -32,7 +32,7 @@ class CourseDetailSerializer(ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('name', 'description', 'count_lesson')
+        fields = ("name", "description", "count_lesson")
 
 
 class LessonSerializer(ModelSerializer):
@@ -40,4 +40,4 @@ class LessonSerializer(ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ('name', 'description', 'course', 'url_video', 'owner')
+        fields = ("name", "description", "course", "url_video", "owner")

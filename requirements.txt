@@ -7,3 +7,4 @@ sqlparse==0.5.1
 pillow==10.4.0
 
 django-filter~=24.2
+stripe~=10.5.0

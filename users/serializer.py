@@ -20,4 +20,4 @@ class UserSerializer(ModelSerializer):
 class SubscriptionSerializer(ModelSerializer):
     class Meta:
         model = Subscription
-        fields = ['user', 'course']
+        fields = ["user", "course"]
