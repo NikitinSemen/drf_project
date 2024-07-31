@@ -32,6 +32,7 @@ class Lesson(models.Model):
     owner = models.ForeignKey(
         "users.User", verbose_name="владелец", on_delete=models.SET_NULL, **NULLABLE
     )
+    product_id = models.CharField(verbose_name='ID продукта', **NULLABLE)
 
     class Meta:
         verbose_name = "урок"

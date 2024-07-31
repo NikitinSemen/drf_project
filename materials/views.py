@@ -18,6 +18,7 @@ from materials.serializer import (
     CourseSerializer,
     LessonSerializer,
 )
+from materials.services import create_product_for_payment
 from users.models import Payment
 from users.permissions import IsModer, IsOwner
 from users.serializer import PaymentSerializer
@@ -67,6 +68,9 @@ class LessonCreateApiView(CreateAPIView):
     def perform_create(self, serializer):
         lesson = serializer.save()
         lesson.owner = self.request.user
+        lesson_like_product_for_stripe = create_product_for_payment(lesson)
+        lesson.product_id = lesson_like_product_for_stripe.get('id')
+
         lesson.save()
 
 

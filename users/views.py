@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters
 from rest_framework.generics import (
     CreateAPIView,
@@ -14,11 +16,12 @@ from rest_framework.views import APIView
 
 from materials.models import Course
 from users.models import Payment, User, Subscription
-from users.serializer import PaymentSerializer, UserSerializer
+from users.serializer import PaymentSerializer, UserSerializer, SubscriptionSerializer
 from users.services import create_price_for_payment, create_session_for_payment
 
 
 class PaymentCreateApiView(CreateAPIView):
+    """Создание платежа"""
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
@@ -32,6 +35,7 @@ class PaymentCreateApiView(CreateAPIView):
 
 
 class PaymentListApiView(ListAPIView):
+    """Просмотр списка платежей"""
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
@@ -40,21 +44,25 @@ class PaymentListApiView(ListAPIView):
 
 
 class PaymentRetrieveApiView(RetrieveAPIView):
+    """Просмотр деталей платежа"""
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
 
 class PaymentDestroyApiView(DestroyAPIView):
+    """Удаление платежа"""
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
 
 class PaymentUpdateApiView(UpdateAPIView):
+    """Редактирование платежа"""
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
 
 class UserCreateApiView(CreateAPIView):
+    """Создание Пользователя"""
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (AllowAny,)
@@ -67,7 +75,13 @@ class UserCreateApiView(CreateAPIView):
 
 class SubscriptionView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = SubscriptionSerializer
 
+    @swagger_auto_schema(
+        request_body=SubscriptionSerializer,
+        responses={201: SubscriptionSerializer},
+        operation_description="Подписать пользователя на курс"
+    )
     def post(self, request, *args, **kwargs):
         user = request.user
         course_id = request.data.get("course_id")

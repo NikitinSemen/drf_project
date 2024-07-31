@@ -20,3 +20,6 @@ def create_session_for_payment(price):
         mode="payment",
     )
     return session.get('id'), session.get('url')
+
+
+
