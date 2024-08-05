@@ -93,7 +93,6 @@ class SubscriptionView(APIView):
             subs_item.delete()
             message = "Подписка удалена"
         else:
-            Subscription.objects.create(user=user, course=course_item)
-            message = "Подписка добавлена"
-
-        return Response({"message": message})
+            subscription = Subscription.objects.create(user=user, course=course_item)
+            serializer = self.serializer_class(subscription)
+            return Response(serializer.data, status=201)

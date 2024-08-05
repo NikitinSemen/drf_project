@@ -8,6 +8,10 @@ from rest_framework.generics import (
     UpdateAPIView,
 )
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from config.settings import EMAIL_HOST_USER
+from .tasks import send_email_task
 
 from rest_framework.viewsets import ModelViewSet
 
@@ -19,7 +23,7 @@ from materials.serializer import (
     LessonSerializer,
 )
 from materials.services import create_product_for_payment
-from users.models import Payment
+from users.models import Payment, Subscription
 from users.permissions import IsModer, IsOwner
 from users.serializer import PaymentSerializer
 
@@ -53,10 +57,30 @@ class CourseViewSet(ModelViewSet):
         if self.action == "create":
             self.permission_classes = (~IsModer,)
         elif self.action in ["update", "retrieve"]:
-            self.permission_classes = (IsModer | IsOwner,)
+            self.permission_classes = (IsAuthenticated,)
         elif self.action == "destroy":
             self.permission_classes = (~IsModer | IsOwner,)
         return super().get_permissions()
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.send_notifications(instance)
+        return Response(serializer.data)
+
+    def send_notifications(self, course):
+        subscriptions = Subscription.objects.filter(course=course)
+        for subscription in subscriptions:
+            user = subscription.user
+            self.send_notification(user, course)
+
+    def send_notification(self, user, course):
+        subject = f'Курс "{course.name}" обновлён'
+        message = f'Курс "{course.name}" был обновлён. Пожалуйста, проверьте изменения.'
+        from_email = EMAIL_HOST_USER
+        
+        send_email_task.delay(subject, message, from_email, [user.email])
 
 
 class LessonCreateApiView(CreateAPIView):
@@ -100,7 +124,3 @@ class LessonUpdateApiView(UpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, IsModer | IsOwner)
-
-
-
-
